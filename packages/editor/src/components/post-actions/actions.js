@@ -68,7 +68,8 @@ function isTemplateRemovable( template ) {
 	// two props whether is custom or has a theme file.
 	return (
 		template?.source === TEMPLATE_ORIGINS.custom &&
-		! template?.has_theme_file
+		! template?.has_theme_file &&
+		template.origin !== 'plugin'
 	);
 }
 
