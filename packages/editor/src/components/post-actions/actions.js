@@ -69,7 +69,8 @@ function isTemplateRemovable( template ) {
 	return (
 		template?.source === TEMPLATE_ORIGINS.custom &&
 		! template?.has_theme_file &&
-		template.origin !== 'plugin'
+		template.origin !== 'plugin' &&
+		template.templatePart?.origin !== 'plugin'
 	);
 }
 
