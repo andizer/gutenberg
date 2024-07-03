@@ -27,7 +27,7 @@ import type { SetSelection } from './private-types';
 
 interface GridItemProps< Item > {
 	selection: string[];
-	onSelectionChange: SetSelection;
+	onChangeSelection: SetSelection;
 	getItemId: ( item: Item ) => string;
 	item: Item;
 	actions: Action< Item >[];
@@ -40,7 +40,7 @@ interface GridItemProps< Item > {
 
 function GridItem< Item >( {
 	selection,
-	onSelectionChange,
+	onChangeSelection,
 	getItemId,
 	item,
 	actions,
@@ -67,7 +67,7 @@ function GridItem< Item >( {
 					if ( ! hasBulkAction ) {
 						return;
 					}
-					onSelectionChange(
+					onChangeSelection(
 						selection.includes( id )
 							? selection.filter( ( itemId ) => id !== itemId )
 							: [ ...selection, id ]
@@ -85,7 +85,7 @@ function GridItem< Item >( {
 				<SingleSelectionCheckbox
 					item={ item }
 					selection={ selection }
-					onSelectionChange={ onSelectionChange }
+					onChangeSelection={ onChangeSelection }
 					getItemId={ getItemId }
 					primaryField={ primaryField }
 					disabled={ ! hasBulkAction }
@@ -175,7 +175,7 @@ export default function ViewGrid< Item >( {
 	fields,
 	getItemId,
 	isLoading,
-	onSelectionChange,
+	onChangeSelection,
 	selection,
 	view,
 }: ViewGridProps< Item > ) {
@@ -221,7 +221,7 @@ export default function ViewGrid< Item >( {
 							<GridItem
 								key={ getItemId( item ) }
 								selection={ selection }
-								onSelectionChange={ onSelectionChange }
+								onChangeSelection={ onChangeSelection }
 								getItemId={ getItemId }
 								item={ item }
 								actions={ actions }

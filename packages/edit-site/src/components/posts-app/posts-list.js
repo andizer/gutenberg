@@ -214,7 +214,7 @@ export default function PostsList( { postType } ) {
 		params: { postId },
 	} = useLocation();
 	const [ selection, setSelection ] = useState( [ postId ] );
-	const onSelectionChange = useCallback(
+	const onChangeSelection = useCallback(
 		( items ) => {
 			const { params } = history.getLocationWithParams();
 			if (
@@ -561,7 +561,7 @@ export default function PostsList( { postType } ) {
 				onChangeView={ onChangeView }
 				selection={ selection }
 				setSelection={ setSelection }
-				onSelectionChange={ onSelectionChange }
+				onChangeSelection={ onChangeSelection }
 				getItemId={ getItemId }
 			/>
 		</Page>

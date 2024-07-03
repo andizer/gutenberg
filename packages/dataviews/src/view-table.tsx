@@ -72,7 +72,7 @@ interface HeaderMenuProps< Item > {
 
 interface BulkSelectionCheckboxProps< Item > {
 	selection: string[];
-	onSelectionChange: SetSelection;
+	onChangeSelection: SetSelection;
 	data: Item[];
 	actions: Action< Item >[];
 	getItemId: ( item: Item ) => string;
@@ -87,7 +87,7 @@ interface TableRowProps< Item > {
 	primaryField?: NormalizedField< Item >;
 	selection: string[];
 	getItemId: ( item: Item ) => string;
-	onSelectionChange: SetSelection;
+	onChangeSelection: SetSelection;
 }
 
 function WithDropDownMenuSeparators( { children }: { children: ReactNode } ) {
@@ -246,7 +246,7 @@ const HeaderMenu: < Item >(
 
 function BulkSelectionCheckbox< Item >( {
 	selection,
-	onSelectionChange,
+	onChangeSelection,
 	data,
 	actions,
 	getItemId,
@@ -274,9 +274,9 @@ function BulkSelectionCheckbox< Item >( {
 			indeterminate={ ! areAllSelected && !! selectedItems.length }
 			onChange={ () => {
 				if ( areAllSelected ) {
-					onSelectionChange( [] );
+					onChangeSelection( [] );
 				} else {
-					onSelectionChange(
+					onChangeSelection(
 						selectableItems.map( ( item ) => getItemId( item ) )
 					);
 				}
@@ -297,7 +297,7 @@ function TableRow< Item >( {
 	primaryField,
 	selection,
 	getItemId,
-	onSelectionChange,
+	onChangeSelection,
 }: TableRowProps< Item > ) {
 	const hasPossibleBulkAction = useHasAPossibleBulkAction( actions, item );
 	const isSelected = hasPossibleBulkAction && selection.includes( id );
@@ -337,7 +337,7 @@ function TableRow< Item >( {
 					! isTouchDevice.current &&
 					document.getSelection()?.type !== 'Range'
 				) {
-					onSelectionChange(
+					onChangeSelection(
 						selection.includes( id )
 							? selection.filter( ( itemId ) => id !== itemId )
 							: [ ...selection, id ]
@@ -356,7 +356,7 @@ function TableRow< Item >( {
 						<SingleSelectionCheckbox
 							item={ item }
 							selection={ selection }
-							onSelectionChange={ onSelectionChange }
+							onChangeSelection={ onChangeSelection }
 							getItemId={ getItemId }
 							primaryField={ primaryField }
 							disabled={ ! hasPossibleBulkAction }
@@ -415,7 +415,7 @@ function ViewTable< Item >( {
 	getItemId,
 	isLoading = false,
 	onChangeView,
-	onSelectionChange,
+	onChangeSelection,
 	selection,
 	setOpenedFilter,
 	view,
@@ -485,7 +485,7 @@ function ViewTable< Item >( {
 							>
 								<BulkSelectionCheckbox
 									selection={ selection }
-									onSelectionChange={ onSelectionChange }
+									onChangeSelection={ onChangeSelection }
 									data={ data }
 									actions={ actions }
 									getItemId={ getItemId }
@@ -562,7 +562,7 @@ function ViewTable< Item >( {
 								primaryField={ primaryField }
 								selection={ selection }
 								getItemId={ getItemId }
-								onSelectionChange={ onSelectionChange }
+								onChangeSelection={ onChangeSelection }
 							/>
 						) ) }
 				</tbody>

@@ -310,7 +310,7 @@ export default function ViewList< Item >( props: ViewListProps< Item > ) {
 		fields,
 		getItemId,
 		isLoading,
-		onSelectionChange,
+		onChangeSelection,
 		selection,
 		view,
 	} = props;
@@ -334,7 +334,7 @@ export default function ViewList< Item >( props: ViewListProps< Item > ) {
 	);
 
 	const onSelect = ( item: Item ) =>
-		onSelectionChange( [ getItemId( item ) ] );
+		onChangeSelection( [ getItemId( item ) ] );
 
 	const getItemDomId = useCallback(
 		( item?: Item ) =>

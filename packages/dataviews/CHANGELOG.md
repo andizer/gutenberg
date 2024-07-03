@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- `onSelectionChange` has been renamed to `onChangeSelection`.
+
 ## 2.2.0 (2024-06-26)
 
 ## 2.1.0 (2024-06-15)
