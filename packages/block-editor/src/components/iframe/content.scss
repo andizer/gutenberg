@@ -4,10 +4,6 @@
 
 .block-editor-iframe__html {
 	transform-origin: top center;
-	transition-property: transform, margin-inline, border-width;
-	transition-duration: 0.3s;
-	transition-timing-function: cubic-bezier(0.6, 0, 0.4, 1);
-	@include reduce-motion("transition");
 }
 
 .block-editor-iframe__html.is-zoomed-out {
