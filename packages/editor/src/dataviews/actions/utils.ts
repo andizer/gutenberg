@@ -49,6 +49,8 @@ export function isTemplateRemovable( template: TemplateOrTemplatePart ) {
 	return (
 		[ template.source, template.source ].includes(
 			TEMPLATE_ORIGINS.custom
-		) && ! template.has_theme_file
+		) &&
+		template?.origin !== TEMPLATE_ORIGINS.plugin &&
+		! template.has_theme_file
 	);
 }
