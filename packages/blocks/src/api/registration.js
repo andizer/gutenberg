@@ -861,7 +861,7 @@ export const registerBlockBindingsSource = ( source ) => {
 	}
 
 	// Check the `label` property is correct.
-	if ( label && typeof label !== 'string' ) {
+	if ( ! existingSource?.label && typeof label !== 'string' ) {
 		console.error( 'Block bindings source label must be a string.' );
 		return;
 	}
