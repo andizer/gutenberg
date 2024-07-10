@@ -800,15 +800,44 @@ export const registerBlockBindingsSource = ( source ) => {
 		canUserEditValue,
 	} = source;
 
-	// Check if the source is already registered.
 	const existingSource = unlock(
 		select( blocksStore )
 	).getBlockBindingsSource( name );
-	if ( existingSource ) {
+
+	/*
+	 * Check if the source has been already registered on the client.
+	 * If the `getValue` property is defined, it could be assumed the source is already registered.
+	 */
+	if ( existingSource?.getValue ) {
 		console.error(
 			'Block bindings source"' + name + '" is already registered.'
 		);
 		return;
+	}
+
+	// Check the properties from the server aren't overriden.
+	if ( existingSource ) {
+		/*
+		 * It is not possible to just check the properties with a value because
+		 * in some of them, like `canUserEditValue`, a default one could be used.
+		 */
+		const serverProperties = [ 'label', 'usesContext' ];
+		let shouldReturn = false;
+		serverProperties.forEach( ( property ) => {
+			if ( existingSource[ property ] && source[ property ] ) {
+				console.error(
+					'Block bindings "' +
+						name +
+						'" source "' +
+						property +
+						'" is already defined in the server.'
+				);
+				shouldReturn = true;
+			}
+		} );
+		if ( shouldReturn ) {
+			return;
+		}
 	}
 
 	// Check the `name` property is correct.
@@ -832,7 +861,7 @@ export const registerBlockBindingsSource = ( source ) => {
 	}
 
 	// Check the `label` property is correct.
-	if ( typeof label !== 'string' ) {
+	if ( label && typeof label !== 'string' ) {
 		console.error( 'Block bindings source label must be a string.' );
 		return;
 	}
@@ -871,13 +900,9 @@ export const registerBlockBindingsSource = ( source ) => {
 		return;
 	}
 
-	unlock( dispatch( blocksStore ) ).addBlockBindingsSource( {
-		name,
-		label,
-		getValue,
-		setValue,
-		setValues,
-		getPlaceholder,
-		canUserEditValue,
-	} );
+	if ( existingSource ) {
+		unlock( dispatch( blocksStore ) ).updateBlockBindingsSource( source );
+	} else {
+		unlock( dispatch( blocksStore ) ).addBlockBindingsSource( source );
+	}
 };
