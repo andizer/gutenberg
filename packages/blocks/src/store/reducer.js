@@ -373,15 +373,32 @@ export function collections( state = {}, action ) {
 
 export function blockBindingsSources( state = {}, action ) {
 	if ( action.type === 'ADD_BLOCK_BINDINGS_SOURCE' ) {
+		// Filter the name property and the undefined values.
+		const newProperties = Object.fromEntries(
+			Object.entries( action ).filter(
+				( [ key, value ] ) => value !== undefined && key !== 'name'
+			)
+		);
+
+		return {
+			...state,
+			[ action.name ]: {
+				// Keep the existing properties if it has been bootstrapped.
+				...state[ action.name ],
+				// Update with the new properties.
+				...newProperties,
+				canUserEditValue: action.canUserEditValue || ( () => false ),
+			},
+		};
+	}
+	if ( action.type === 'ADD_BOOTSTRAPPED_BLOCK_BINDINGS_SOURCE' ) {
 		return {
 			...state,
 			[ action.name ]: {
 				label: action.label,
-				getValue: action.getValue,
-				setValue: action.setValue,
-				setValues: action.setValues,
-				getPlaceholder: action.getPlaceholder,
-				canUserEditValue: action.canUserEditValue || ( () => false ),
+				usesContext: action.usesContext,
+				// Lock editing for bootstrapped sources.
+				canUserEditValue: () => false,
 			},
 		};
 	}

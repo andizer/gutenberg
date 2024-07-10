@@ -2,7 +2,10 @@
  * Internal dependencies
  */
 import { lock } from '../lock-unlock';
-import { registerBlockBindingsSource } from './registration';
+import {
+	registerBlockBindingsSource,
+	bootstrapBlockBindingsSource,
+} from './registration';
 
 // The blocktype is the most important concept within the block API. It defines
 // all aspects of the block configuration and its interfaces, including `edit`
@@ -174,4 +177,5 @@ export {
 export const privateApis = {};
 lock( privateApis, {
 	registerBlockBindingsSource,
+	bootstrapBlockBindingsSource,
 } );
