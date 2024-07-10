@@ -9,7 +9,7 @@ import { createContext, useContext } from '@wordpress/element';
 import useMediaQuery from '../use-media-query';
 
 /**
- * @typedef {"huge" | "wide" | "large" | "medium" | "small" | "mobile"} WPBreakpoint
+ * @typedef {"huge" | "wide" | "xlarge" | "large" | "medium" | "small" | "mobile"} WPBreakpoint
  */
 
 /**
@@ -22,6 +22,7 @@ import useMediaQuery from '../use-media-query';
 const BREAKPOINTS = {
 	huge: 1440,
 	wide: 1280,
+	xlarge: 1080,
 	large: 960,
 	medium: 782,
 	small: 600,

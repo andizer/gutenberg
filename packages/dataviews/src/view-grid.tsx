@@ -24,6 +24,7 @@ import SingleSelectionCheckbox from './single-selection-checkbox';
 import { useHasAPossibleBulkAction } from './bulk-actions';
 import type { Action, NormalizedField, ViewGridProps } from './types';
 import type { SetSelection } from './private-types';
+import { useDensityValue } from './density-picker';
 
 interface GridItemProps< Item > {
 	selection: string[];
@@ -178,6 +179,7 @@ export default function ViewGrid< Item >( {
 	onSelectionChange,
 	selection,
 	view,
+	densityDelta,
 }: ViewGridProps< Item > ) {
 	const mediaField = fields.find(
 		( field ) => field.id === view.layout?.mediaField
@@ -208,6 +210,7 @@ export default function ViewGrid< Item >( {
 		{ visibleFields: [], badgeFields: [] }
 	);
 	const hasData = !! data?.length;
+	const densityValue = useDensityValue( densityDelta );
 	return (
 		<>
 			{ hasData && (
@@ -216,6 +219,9 @@ export default function ViewGrid< Item >( {
 					columns={ 2 }
 					alignment="top"
 					className="dataviews-view-grid"
+					style={ {
+						gridTemplateColumns: `repeat(${ densityValue }, minmax(0, 1fr))`,
+					} }
 					aria-busy={ isLoading }
 				>
 					{ data.map( ( item ) => {

@@ -32,6 +32,7 @@ import type {
 	SupportedLayouts,
 } from './types';
 import type { SetSelection, SelectionOrUpdater } from './private-types';
+import DensityPicker from './density-picker';
 
 type ItemWithId = { id: string };
 
@@ -77,6 +78,7 @@ export default function DataViews< Item >( {
 	onSelectionChange = defaultOnSelectionChange,
 }: DataViewsProps< Item > ) {
 	const [ selectionState, setSelectionState ] = useState< string[] >( [] );
+	const [ densityDelta, setDensityDelta ] = useState< number >( 0 );
 	const isUncontrolled =
 		selectionProperty === undefined || setSelectionProperty === undefined;
 	const selection = isUncontrolled ? selectionState : selectionProperty;
@@ -134,6 +136,12 @@ export default function DataViews< Item >( {
 						setOpenedFilter={ setOpenedFilter }
 					/>
 				</HStack>
+				{ view.type === LAYOUT_GRID && (
+					<DensityPicker
+						densityDelta={ densityDelta }
+						setDensityDelta={ setDensityDelta }
+					/>
+				) }
 				{ [ LAYOUT_TABLE, LAYOUT_GRID ].includes( view.type ) &&
 					hasPossibleBulkAction && (
 						<BulkActions
@@ -162,6 +170,7 @@ export default function DataViews< Item >( {
 				selection={ _selection }
 				setOpenedFilter={ setOpenedFilter }
 				view={ view }
+				densityDelta={ densityDelta }
 			/>
 			<Pagination
 				view={ view }

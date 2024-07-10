@@ -411,6 +411,7 @@ export interface ViewBaseProps< Item > {
 	selection: string[];
 	setOpenedFilter: ( fieldId: string ) => void;
 	view: View;
+	densityDelta: number;
 }
 
 export interface ViewTableProps< Item > extends ViewBaseProps< Item > {
