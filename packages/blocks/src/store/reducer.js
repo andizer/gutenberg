@@ -375,13 +375,31 @@ export function blockBindingsSources( state = {}, action ) {
 	if ( action.type === 'ADD_BLOCK_BINDINGS_SOURCE' ) {
 		return {
 			...state,
-			[ action.sourceName ]: {
-				label: action.sourceLabel,
+			[ action.name ]: {
+				label: action.label,
 				getValue: action.getValue,
 				setValue: action.setValue,
 				setValues: action.setValues,
 				getPlaceholder: action.getPlaceholder,
 				canUserEditValue: action.canUserEditValue || ( () => false ),
+			},
+		};
+	}
+	if ( action.type === 'UPDATE_BLOCK_BINDINGS_SOURCE' ) {
+		// Filter the name property and the undefined values.
+		const updatedProperties = Object.fromEntries(
+			Object.entries( action ).filter(
+				( [ key, value ] ) => value !== undefined && key !== 'name'
+			)
+		);
+
+		return {
+			...state,
+			[ action.name ]: {
+				// Keep the existing properties.
+				...state[ action.name ],
+				// Update with the new properties.
+				...updatedProperties,
 			},
 		};
 	}
