@@ -26,7 +26,7 @@ const QUERY_DEFAULT_ATTRIBUTES = {
 		search: '',
 		exclude: [],
 		sticky: '',
-		inherit: false,
+		inherit: true,
 	},
 };
 
@@ -50,7 +50,7 @@ const variations = [
 				author: '',
 				search: '',
 				sticky: 'exclude',
-				inherit: false,
+				inherit: true,
 			},
 		},
 		scope: [ 'inserter' ],
