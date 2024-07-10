@@ -473,7 +473,7 @@ describe( 'block serializer', () => {
 					type: 'string',
 					default: 'apple',
 				},
-			}
+			},
 		};
 		const variations = [
 			{
