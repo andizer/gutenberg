@@ -25,6 +25,8 @@ const { state, actions, callbacks } = store(
 		state: {
 			metadata: {},
 			currentImage: {},
+			images: [],
+			isGallery: false,
 			get overlayOpened() {
 				return state.currentImage.currentSrc;
 			},
@@ -59,18 +61,20 @@ const { state, actions, callbacks } = store(
 					return;
 				}
 
-				state.overlayEnabled = true;
-
 				// Stores the positions of the scroll to fix it until the overlay is
 				// closed.
 				state.scrollTopReset = document.documentElement.scrollTop;
 				state.scrollLeftReset = document.documentElement.scrollLeft;
 
-				// Sets the information of the expanded image in the state.
-				state.currentImage = state.metadata[ ctx.imageId ];
+				const { lightbox, images } = getContext( 'core/gallery' ) || {};
+				state.isGallery = !! lightbox || false;
+				state.images = state.isGallery ? images || [] : [ ctx.imageId ];
 
-				// Computes the styles of the overlay for the animation.
-				callbacks.setOverlayStyles();
+				// Sets the current image index to the one that was clicked.
+				callbacks.setCurrentImageIndex( ctx.imageId );
+
+				// Sets the information of the expanded image in the state.
+				callbacks.setCurrentImage();
 			},
 			hideLightbox() {
 				if ( state.overlayEnabled ) {
@@ -97,6 +101,30 @@ const { state, actions, callbacks } = store(
 					state.overlayEnabled = false;
 				}
 			},
+			showPreviousImage( e ) {
+				if ( ! state.isGallery ) {
+					return;
+				}
+
+				e.stopPropagation();
+				if ( state.currentImageIndex - 1 < 0 ) {
+					return;
+				}
+				state.currentImageIndex = state.currentImageIndex - 1;
+				callbacks.setCurrentImage();
+			},
+			showNextImage( e ) {
+				if ( ! state.isGallery ) {
+					return;
+				}
+
+				e.stopPropagation();
+				if ( state.currentImageIndex + 1 >= state.images.length ) {
+					return;
+				}
+				state.currentImageIndex = state.currentImageIndex + 1;
+				callbacks.setCurrentImage();
+			},
 			handleKeydown( event ) {
 				if ( state.overlayEnabled ) {
 					// Focuses the close button when the user presses the tab key.
@@ -104,10 +132,18 @@ const { state, actions, callbacks } = store(
 						event.preventDefault();
 						const { ref } = getElement();
 						ref.querySelector( 'button' ).focus();
+
+						// TODO: now that there are next and prev buttons, rotate the focus
 					}
 					// Closes the lightbox when the user presses the escape key.
 					if ( event.key === 'Escape' ) {
 						actions.hideLightbox();
+					}
+
+					if ( event.key === 'ArrowLeft' ) {
+						actions.showPreviousImage( event );
+					} else if ( event.key === 'ArrowRight' ) {
+						actions.showNextImage( event );
 					}
 				}
 			},
@@ -156,6 +192,30 @@ const { state, actions, callbacks } = store(
 			},
 		},
 		callbacks: {
+			initImage() {
+				const { lightbox, images } = getContext( 'core/gallery' ) || {};
+				if ( ! lightbox ) {
+					return;
+				}
+
+				const ctx = getContext();
+				images.push( ctx.imageId );
+			},
+			setCurrentImageIndex( imageId ) {
+				const currentIndex = state.images.findIndex(
+					( id ) => id === imageId
+				);
+				state.currentImageIndex = currentIndex;
+			},
+			setCurrentImage() {
+				const imageId = state.images[ state.currentImageIndex ];
+				state.currentImage = state.metadata[ imageId ];
+
+				state.overlayEnabled = true;
+
+				// Computes the styles of the overlay for the animation.
+				callbacks.setOverlayStyles();
+			},
 			setOverlayStyles() {
 				if ( ! state.currentImage.imageRef ) {
 					return;
@@ -198,12 +258,14 @@ const { state, actions, callbacks } = store(
 				// size), the image's dimensions in the lightbox are the same
 				// as those of the image in the content.
 				let imgMaxWidth = parseFloat(
-					state.currentImage.targetWidth !== 'none'
+					state.currentImage.targetWidth &&
+						state.currentImage.targetWidth !== 'none'
 						? state.currentImage.targetWidth
 						: naturalWidth
 				);
 				let imgMaxHeight = parseFloat(
-					state.currentImage.targetHeight !== 'none'
+					state.currentImage.targetHeight &&
+						state.currentImage.targetHeight !== 'none'
 						? state.currentImage.targetHeight
 						: naturalHeight
 				);
