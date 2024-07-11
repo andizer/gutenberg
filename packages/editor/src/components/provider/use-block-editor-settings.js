@@ -135,7 +135,10 @@ function useBlockEditorSettings( settings, postType, postId, renderingMode ) {
 			const { getBlockTypes } = select( blocksStore );
 			const { getBlocksByName, getBlockAttributes } =
 				select( blockEditorStore );
-			const siteSettings = canUser( 'read', 'settings' )
+			const siteSettings = canUser( 'read', {
+				kind: 'root',
+				name: 'site',
+			} )
 				? getEntityRecord( 'root', 'site' )
 				: undefined;
 
@@ -169,8 +172,15 @@ function useBlockEditorSettings( settings, postType, postId, renderingMode ) {
 				hiddenBlockTypes: get( 'core', 'hiddenBlockTypes' ),
 				isDistractionFree: get( 'core', 'distractionFree' ),
 				keepCaretInsideBlock: get( 'core', 'keepCaretInsideBlock' ),
-				hasUploadPermissions: canUser( 'create', 'media' ) ?? true,
-				userCanCreatePages: canUser( 'create', 'pages' ),
+				hasUploadPermissions:
+					canUser( 'create', {
+						kind: 'root',
+						name: 'media',
+					} ) ?? true,
+				userCanCreatePages: canUser( 'create', {
+					kind: 'postType',
+					name: 'page',
+				} ),
 				pageOnFront: siteSettings?.page_on_front,
 				pageForPosts: siteSettings?.page_for_posts,
 				userPatternCategories: getUserPatternCategories(),
